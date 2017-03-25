@@ -8,6 +8,24 @@ import spock.lang.Unroll
 class TransformationTest extends Specification {
 
     @Unroll
+    def "should find differences between words"() {
+        when:
+        def distances  = Transformation.hammingDistances(words)
+
+        then:
+        distances.size() == words.size()
+
+        distances[(new Transformation.Pair("hat", "cog"))] == 3
+        distances[(new Transformation.Pair("cog", "hat"))] == 3
+        distances[(new Transformation.Pair("cog", "cot"))] == 1
+
+        where:
+        words << [["hat", "cog", "cot"] as String[]]
+
+    }
+
+
+    @Unroll
     def "should skip words that would remove more than one character"() {
         when:
         def filteredWords = Transformation.filterWords(beginWord, words)
