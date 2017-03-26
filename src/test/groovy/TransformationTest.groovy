@@ -25,6 +25,21 @@ class TransformationTest extends Specification {
     }
 
 
+    def "should build graph"() {
+        when:
+        Transformation.Graph graph = Transformation
+                .buildGraph(["bot", "hat", "cot", "cog"] as String[])
+
+
+        then:
+        graph.nodes.size() == 4;
+        graph.nodes['bot'].word == 'bot'
+        graph.nodes['bot'].adjacentWords[0].word == 'cot'
+        graph.nodes['bot'].adjacentWords[0].adjacentWords[0].word == 'cog'
+        graph.nodes['hat'].adjacentWords.isEmpty()
+
+    }
+
     @Unroll
     def "should skip words that would remove more than one character"() {
         when:
@@ -70,7 +85,15 @@ class TransformationTest extends Specification {
         'cot'       | ["hat", "cog"] as String[]  | 'cog' | 2
         'bot'       | ["hat", "cot", "cog"] as String[]  | 'cog' |  3
         'hit'       | ["hot", "dot", "dog", "lot", "log", "cog"] as String[]  | 'cog' | 5
-        'lost' |     ["most","fist","lost", "cost","fish","fist","lost", "cost","fish","fist","lost", "cost","fish"]  as String[] | 'cost' | 2
+        'lost' |      ["most","fist", "cost","fish"]  as String[] | 'cost' | 2
+         "hot" | ["hot",
+                   "cog",
+                   "dog",
+                   "tot",
+                   "hog",
+                   "hop",
+                   "pot",
+                   "dot"] as String[] | "dog"  | 3
 
     }
 
